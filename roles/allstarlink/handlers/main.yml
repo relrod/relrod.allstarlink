@@ -1,0 +1,7 @@
+- name: reload asterisk
+  service:
+    state: "{{ 'restarted' if item == 'asl-update-node-list' else 'reloaded' }}"
+    name: "{{ item }}"
+  with_items:
+    - asl-asterisk
+    - asl-update-node-list

@@ -1,0 +1,150 @@
+argument_specs:
+  main:
+    short_description: Set up an AllStarLink node
+    author:
+      - Rick Elrod
+    options:
+      node_number:
+        type: int
+        required: true
+        description: The node number we're configuring.
+
+      carrierfrom:
+        type: str
+        required: false
+        default: usb
+        description: "https://wiki.allstarlink.org/wiki/SimpleUSB_Channel_Driver"
+
+      duplex:
+        type: int
+        required: false
+        default: 1
+        description: "https://wiki.allstarlink.org/wiki/Rpt.conf#duplex.3D"
+
+      idrecording:
+        type: str
+        required: true
+        description: "https://wiki.allstarlink.org/wiki/Rpt.conf#idrecording.3D"
+
+      idtalkover:
+        type: str
+        required: true
+        description: "https://wiki.allstarlink.org/wiki/Rpt.conf#idtalkover.3D"
+
+      bind:
+        type: str
+        required: false
+        default: 0.0.0.0
+        description: IP address/interface to bind to.
+
+      port:
+        type: int
+        required: false
+        default: 4569
+        description: Port number to bind to.
+
+      reg_password:
+        type: str
+        required: true
+        description: Password to register with the AllStarLink server.
+
+      reg_server:
+        type: str
+        required: false
+        default: register.allstarlink.org
+        description: AllStarLink registration server hostname.
+
+      tailmessagelist:
+        type: list
+        elements: str
+        required: false
+        description: >-
+          List of messages to include in the tail of a transmission every once
+          in a while.
+
+      tailmessagetime:
+        type: int
+        required: false
+        default: 3600000
+        description: How often tail messages should play, if enabled.
+
+      delinked_courtesy_tone:
+        type: str
+        required: false
+        default: "|t(750,0,125,2048)(1000,0,80,2048)"
+        description: Courtesy tone when node is not linked to anything.
+
+      link_rx_courtesy_tone:
+        type: str
+        required: false
+        default: "|t(800,0,40,1500)(0,0,30,0)(800,0,40,1500)"
+        description: Courtesy tone when node a linked remote unkeys.
+
+      linked_courtesy_tone:
+        type: str
+        required: false
+        default: "|t(660,0,50,2048)"
+        description: Courtesy tone when someone on RF unkeys but we are linked.
+
+      unkeywait:
+        type: int
+        required: false
+        default: 800
+        description: How long to wait before sending courtesy tones, etc.
+
+      totime:
+        type: int
+        required: false
+        default: 600000
+        description: How long until we time out? Defaults to 10 minutes.
+
+      outstreamcmd:
+        type: str
+        required: false
+        default: null
+        description: A command to call for streaming audio from the node.
+
+      macros:
+        type: list
+        elements: dict
+        required: false
+        default: []
+        description: >-
+          A list of dictionaries with keys:
+          - comment (optional, string),
+          - macro (int),
+          - command (string)
+
+      scheduler:
+        type: list
+        elements: dict
+        required: false
+        default: []
+        description: >-
+          A list of dictionaries with keys:
+          - comment (optional, string),
+          - macro (int),
+          - when (cron style time format)
+          - finish (optional, cron style time format)
+          - finish_macro (optional, int)
+
+      rxchannel:
+        type: str
+        required: false
+        default: SimpleUSB/usb_{{ node_number }}
+        description: The radio interface to use.
+
+      echolink:
+        type: bool
+        required: false
+        default: false
+        description: Should echolink be enabled and loaded?
+
+      acl_context:
+        type: str
+        required: false
+        default: whitelist
+        choices:
+          - whitelist
+          - blacklist
+        description: Whether the node should whitelist, or blacklist, incoming connections.

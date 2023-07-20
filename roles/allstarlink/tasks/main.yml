@@ -1,0 +1,182 @@
+---
+
+- name: Install apt key
+  get_url:
+    url: https://raw.githubusercontent.com/AI5A/asl-pkgs/main/pkg_pub_key.asc
+    dest: /etc/apt/trusted.gpg.d/ai5a-asl.asc
+  tags:
+    - allstarlink
+    - install
+    - repo
+
+- name: Set up apt repository
+  apt_repository:
+    repo: deb [signed-by=/etc/apt/trusted.gpg.d/ai5a-asl.asc] https://repo.ai5a.net/deb/bullseye bullseye main
+  tags:
+    - allstarlink
+    - install
+    - repo
+
+- name: Install kernel headers
+  apt:
+    name:
+      - linux-headers-generic
+  tags:
+    - allstarlink
+    - install
+    - dahdi
+
+- name: Install packages
+  apt:
+    update_cache: true
+    name:
+      - asl-asterisk
+      - allstar-helpers
+      - asl-update-node-list
+  register: install
+  tags:
+    - allstarlink
+    - install
+
+- name: Remove boilerplate files if fresh install
+  file:
+    dest: /etc/asterisk
+    state: absent
+  when: install is defined and install is changed
+  tags:
+    - allstarlink
+    - config
+    - install
+
+- name: Create node-specific directories for configs
+  file:
+    dest: /etc/asterisk/{{ item }}
+    owner: asterisk
+    group: asterisk
+    mode: 0755
+    state: directory
+  with_items:
+    - extensions
+    - rpt
+    - simpleusb
+  tags:
+    - allstarlink
+    - config
+    - aslconfig
+
+- name: Copy configuration file templates
+  template:
+    src: "{{ item }}"
+    dest: /etc/asterisk/{{ item }}
+    owner: asterisk
+    group: asterisk
+    mode: 0644
+  with_items:
+    - extensions.conf
+    - iax.conf
+    #- manager.conf
+    - rpt.conf
+    - simpleusb.conf
+    - modules.conf
+  notify:
+    - reload asterisk
+  tags:
+    - allstarlink
+    - config
+    - aslconfig
+
+#- name: Only copy echolink.conf if it's enabled
+#  template:
+#    src: echolink.conf
+#    dest: /etc/asterisk/echolink.conf
+#    owner: asterisk
+#    group: asterisk
+#    mode: 0644
+#  when: echolink.enabled
+#  notify:
+#    - reload asterisk
+#  tags:
+#    - allstarlink
+#    - config
+
+- name: Copy static configuration files
+  copy:
+    src: "{{ item }}"
+    dest: /etc/asterisk/{{ item }}
+    owner: asterisk
+    group: asterisk
+    mode: 0644
+  with_items:
+    - asterisk.conf
+    - codecs.conf
+    - dnsmgr.conf
+    - enum.conf
+    - features.conf
+    - indications.conf
+    - logger.conf
+  notify:
+    - reload asterisk
+  tags:
+    - allstarlink
+    - config
+    - aslconfig
+
+- name: Generate node-specific config files for including elsewhere
+  template:
+    src: "node_includes/{{ item.src }}"
+    dest: "/etc/asterisk/{{ item.subdir }}/{{ node_number }}-{{ item.end }}.conf"
+    owner: asterisk
+    group: asterisk
+    mode: 0644
+  with_items:
+    - { subdir: extensions, src: radio-secure.conf, end: radio-secure }
+    - { subdir: extensions, src: iaxrpt.conf, end: iaxrpt }
+    - { subdir: extensions, src: iax-client.conf, end: iax-client }
+    - { subdir: rpt, src: rpt.conf, end: rpt }
+    - { subdir: rpt, src: node.conf, end: node }
+    #- { subdir: simpleusb, src: simpleusb.conf, end: simpleusb }
+  notify:
+    - reload asterisk
+  tags:
+    - allstarlink
+    - config
+    - nodeconfig
+    - aslconfig
+
+- name: Ensure empty chan_dahdi.conf file exists
+  file:
+    dest: /etc/asterisk/chan_dahdi.conf
+    owner: asterisk
+    group: asterisk
+    mode: 0644
+    state: touch
+    modification_time: preserve
+    access_time: preserve
+  notify:
+    - reload asterisk
+  tags:
+    - allstarlink
+    - config
+    - aslconfig
+
+- name: Set up services
+  service:
+    enabled: true
+    state: started
+    name: "{{ item }}"
+  with_items:
+    - asl-asterisk
+    - asl-update-node-list
+  tags:
+    - allstarlink
+    - service
+
+- name: firewall - allow AllStarLink
+  community.general.ufw:
+    rule: allow
+    port: "{{ port }}"
+    comment: AllStarLink port
+  tags:
+    - base
+    - config
+    - firewall

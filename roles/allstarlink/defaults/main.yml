@@ -1,0 +1,18 @@
+carrierfrom: usb
+duplex: 1
+bind: 0.0.0.0
+port: 4569
+reg_server: register.allstarlink.org
+tailmessagelist: []
+tailmessagetime: 3600000
+delinked_courtesy_tone: "|t(750,0,125,2048)(1000,0,80,2048)"
+link_rx_courtesy_tone: "|t(800,0,40,1500)(0,0,30,0)(800,0,40,1500)"
+linked_courtesy_tone: "|t(660,0,50,2048)"
+unkeywait: 800
+totime: 600000
+macros: []
+scheduler: []
+outstreamcmd: null
+rxchannel: SimpleUSB/usb_{{ node_number }}
+echolink: false
+acl_context: whitelist

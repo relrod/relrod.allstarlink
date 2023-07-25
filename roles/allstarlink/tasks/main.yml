@@ -20,7 +20,7 @@
 - name: Install kernel headers
   apt:
     name:
-      - linux-headers-generic
+      - linux-headers
   tags:
     - allstarlink
     - install

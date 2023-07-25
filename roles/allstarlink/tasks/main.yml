@@ -171,12 +171,12 @@
     - allstarlink
     - service
 
-- name: firewall - allow AllStarLink
-  community.general.ufw:
-    rule: allow
-    port: "{{ port }}"
-    comment: AllStarLink port
-  tags:
-    - base
-    - config
-    - firewall
+#- name: firewall - allow AllStarLink
+#  community.general.ufw:
+#    rule: allow
+#    port: "{{ port }}"
+#    comment: AllStarLink port
+#  tags:
+#    - base
+#    - config
+#    - firewall

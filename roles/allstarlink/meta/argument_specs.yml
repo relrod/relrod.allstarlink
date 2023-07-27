@@ -4,6 +4,33 @@ argument_specs:
     author:
       - Rick Elrod
     options:
+      install_method:
+        type: str
+        required: false
+        default: ai5a-deb
+        choices:
+          - ai5a-deb
+          - upstream-deb
+          - config-only
+        description: |
+          How should ASL be installed?
+          ai5a-deb: Uses the AI5A fork of AllStarLink
+          upstream-deb: Uses the upstream AllStarLink (often does not support
+                        newer Debian)
+          config-only: Writes out templated config files but does not install
+                       packages (useful for Docker installations to mount, etc.)
+
+      config_directory:
+        type: str
+        required: false
+        default: /etc/asterisk
+        description: |
+          Where should we write out the config files to?
+          This directory will be *deleted* on initial install (unless
+          install_method is config-only). Generally you should not change this
+          unless you are using install_method: config-only and want to mount
+          this directory from elsewhere.
+
       node_number:
         type: int
         required: true
@@ -140,6 +167,18 @@ argument_specs:
         default: false
         description: Should echolink be enabled and loaded?
 
+      echolink_config:
+        type: dict
+        required: false
+        default: {}
+        description: >-
+          Required when 'echolink' is true.
+          A dictionary of echolink configuration options. See
+          https://wiki.allstarlink.org/wiki/Echolink.conf_-_Echolink_Channel_Driver
+          for more information. We directly translate the keys in this dictionary
+          to the echolink.conf file. The following keys are hardcoded:
+          astnode, context, server1, server2, server3, rtcptimeout, recfile
+
       acl_context:
         type: str
         required: false
@@ -148,3 +187,30 @@ argument_specs:
           - whitelist
           - blacklist
         description: Whether the node should whitelist, or blacklist, incoming connections.
+
+      ami:
+        type: bool
+        required: false
+        default: false
+        description: Should the Asterisk Manager Interface be enabled?
+
+      ami_port:
+        type: int
+        required: false
+        default: 5038
+        description: Port to bind the AMI to.
+
+      ami_bindaddr:
+        type: str
+        required: false
+        default: 127.0.0.1
+        description: IP address to bind the AMI to.
+
+      ami_users:
+        type: dict
+        required: false
+        default: {}
+        description: >-
+          A dictionary of AMI users to create. The keys are the usernames, and
+          the values are dictionaries that get translated directly to the
+          configuration file.

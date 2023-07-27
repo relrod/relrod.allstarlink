@@ -5,3 +5,5 @@
   with_items:
     - asl-asterisk
     - asl-update-node-list
+  when:
+    - install_method != 'config-only'

@@ -1,3 +1,5 @@
+install_method: ai5a-deb
+config_directory: /etc/asterisk
 carrierfrom: usb
 duplex: 1
 bind: 0.0.0.0
@@ -15,4 +17,9 @@ scheduler: []
 outstreamcmd: null
 rxchannel: SimpleUSB/usb_{{ node_number }}
 echolink: false
+echolink_config: {}
 acl_context: whitelist
+ami: false
+ami_port: 5038
+ami_bindaddr: 127.0.0.1
+ami_users: {}

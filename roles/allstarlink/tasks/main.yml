@@ -2,7 +2,7 @@
 - name: Role sanity check
   assert:
     that:
-      - echolink_config != {} or echolink.enabled == false
+      - echolink_config != {} or not echolink
 
 - name: Install packages
   block:

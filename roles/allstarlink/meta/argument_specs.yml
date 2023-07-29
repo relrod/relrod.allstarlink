@@ -226,3 +226,13 @@ argument_specs:
           update script. This is for nodes, for example, that are on your LAN
           and you want to connect to directly without hairpinning.
           Each dict must include: node_number, ip, port
+
+      startup_macro:
+        type: list
+        elements: str
+        required: false
+        default: []
+        description: >-
+          The macro to run on startup. This is useful for things like connecting
+          to a hub, etc. This is a list of strings (mainly so that you can
+          comment what each macro does in your playbook).

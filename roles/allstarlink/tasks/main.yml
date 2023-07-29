@@ -10,22 +10,16 @@
       get_url:
         url: https://raw.githubusercontent.com/AI5A/asl-pkgs/main/pkg_pub_key.asc
         dest: /etc/apt/trusted.gpg.d/asl.asc
-      tags:
-        - repo
 
     - name: Set up apt repository
       apt_repository:
         repo: deb [signed-by=/etc/apt/trusted.gpg.d/ai5a-asl.asc] https://repo.ai5a.net/deb/{{ ansible_distribution_release }} {{ ansible_distribution_release }} bullseye main
         filename: asl
-      tags:
-        - repo
 
     - name: Install kernel headers
       apt:
         name:
           - "{{ 'linux-headers' if 'arm' in ansible_architecture else 'linux-headers-generic' }}"
-      tags:
-        - dahdi
 
     - name: Install packages
       apt:
@@ -42,11 +36,6 @@
         dest: "{{ config_directory }}"
         state: absent
       when: install is defined and install is changed
-      tags:
-        - config
-  tags:
-    - allstarlink
-    - install
   when: install_method != 'config-only'
 
 - name: Create node-specific directories for configs
@@ -60,10 +49,6 @@
     - extensions
     - rpt
     - simpleusb
-  tags:
-    - allstarlink
-    - config
-    - aslconfig
 
 - name: Copy configuration file templates
   template:
@@ -81,10 +66,6 @@
     - modules.conf
   notify:
     - reload asterisk
-  tags:
-    - allstarlink
-    - config
-    - aslconfig
 
 - name: Copy echolink configuration file
   template:
@@ -96,9 +77,6 @@
   when: echolink
   notify:
     - reload asterisk
-  tags:
-    - allstarlink
-    - config
 
 - name: Copy static configuration files
   copy:
@@ -117,10 +95,6 @@
     - logger.conf
   notify:
     - reload asterisk
-  tags:
-    - allstarlink
-    - config
-    - aslconfig
 
 - name: Generate node-specific config files for including elsewhere
   template:
@@ -138,11 +112,6 @@
     - { subdir: simpleusb, src: simpleusb.conf, end: simpleusb }
   notify:
     - reload asterisk
-  tags:
-    - allstarlink
-    - config
-    - nodeconfig
-    - aslconfig
 
 - name: Ensure empty chan_dahdi.conf file exists
   file:
@@ -155,10 +124,6 @@
     access_time: preserve
   notify:
     - reload asterisk
-  tags:
-    - allstarlink
-    - config
-    - aslconfig
 
 - name: Set up services
   service:
@@ -170,16 +135,9 @@
     - asl-update-node-list
   when:
     - install_method != 'config-only'
-  tags:
-    - allstarlink
-    - service
 
 #- name: firewall - allow AllStarLink
 #  community.general.ufw:
 #    rule: allow
 #    port: "{{ port }}"
 #    comment: AllStarLink port
-#  tags:
-#    - base
-#    - config
-#    - firewall

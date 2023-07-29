@@ -23,7 +23,7 @@
     - name: Install kernel headers
       apt:
         name:
-          - linux-headers
+          - "{{ 'linux-headers' if 'arm' in ansible_architecture else 'linux-headers-generic' }}"
       tags:
         - dahdi
 

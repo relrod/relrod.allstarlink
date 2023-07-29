@@ -75,7 +75,7 @@
   with_items:
     - extensions.conf
     - iax.conf
-    #- manager.conf
+    - manager.conf
     - rpt.conf
     - simpleusb.conf
     - modules.conf

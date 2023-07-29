@@ -214,3 +214,15 @@ argument_specs:
           A dictionary of AMI users to create. The keys are the usernames, and
           the values are dictionaries that get translated directly to the
           configuration file.
+
+      local_nodes:
+        type: list
+        elements: dict
+        required: false
+        default: []
+        description: |
+          A list of local nodes, not including the current node and only
+          including nodes not already covered by the asterisk external nodes
+          update script. This is for nodes, for example, that are on your LAN
+          and you want to connect to directly without hairpinning.
+          Each dict must include: node_number, ip, port

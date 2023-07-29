@@ -23,3 +23,4 @@ ami: false
 ami_port: 5038
 ami_bindaddr: 127.0.0.1
 ami_users: {}
+local_nodes: []

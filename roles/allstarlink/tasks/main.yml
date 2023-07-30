@@ -10,6 +10,7 @@
       get_url:
         url: https://raw.githubusercontent.com/AI5A/asl-pkgs/main/pkg_pub_key.asc
         dest: /etc/apt/trusted.gpg.d/asl.asc
+        checksum: sha256:1530eec11a412b65873c410d5886b20910a8c817ee34f48ca8dcba7acacf04ad
 
     - name: Set up apt repository
       apt_repository:

@@ -315,3 +315,8 @@ argument_specs:
           1 = telemetry output on
           2 = timed telemetry output on command execution and for a short time thereafter.
           https://wiki.allstarlink.org/wiki/Rpt.conf#telemdefault.3D
+
+      politeid:
+        type: int
+        required: false
+        default: 30000

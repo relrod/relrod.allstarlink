@@ -147,7 +147,7 @@ argument_specs:
         elements: dict
         required: false
         default: []
-        description: >-
+        description: |
           A list of dictionaries with keys:
           - comment (optional, string),
           - macro (int),
@@ -178,6 +178,33 @@ argument_specs:
           for more information. We directly translate the keys in this dictionary
           to the echolink.conf file. The following keys are hardcoded:
           astnode, context, server1, server2, server3, rtcptimeout, recfile
+
+      erxgain:
+        type: int
+        required: false
+        default: -3
+        description: >-
+          https://wiki.allstarlink.org/wiki/Rpt.conf#erxgain.3D
+          Receive gain for echolink in db-volts.
+
+      etxgain:
+        type: int
+        required: false
+        default: 3
+        description: >-
+          https://wiki.allstarlink.org/wiki/Rpt.conf#etxgain.3D
+          Transmit gain for echolink in db-volts.
+
+      eannmode:
+        type: int
+        required: false
+        default: 1
+        description: |
+          https://wiki.allstarlink.org/wiki/Rpt.conf#eannmode.3D
+          Announce mode for echolink.
+          1 = Say only node number on echolink connects
+          2 = Say phonetic call sign only on echolink connects
+          3 = Say phonetic call sign and node number on echolink connects
 
       acl_context:
         type: str
@@ -236,3 +263,55 @@ argument_specs:
           The macro to run on startup. This is useful for things like connecting
           to a hub, etc. This is a list of strings (mainly so that you can
           comment what each macro does in your playbook).
+
+      hangtime:
+        type: int
+        required: false
+        default: 500
+        description: >-
+          Repeater hang time in ms.
+          https://wiki.allstarlink.org/wiki/Rpt.conf#hangtime.3D
+
+      althangtime:
+        type: int
+        required: false
+        default: 1000
+        description: >-
+          Alternate hang time in ms.
+          https://wiki.allstarlink.org/wiki/Rpt.conf#althangtime.3D
+
+      holdofftelem:
+        type: bool
+        required: false
+        default: false
+        description: >-
+          Forces all telemetry to be held off until a local user on the receiver
+          or a remote user over a link unkeys. See
+          https://wiki.allstarlink.org/wiki/Rpt.conf#holdofftelem.3D
+
+      nounkeyct:
+        type: bool
+        required: false
+        default: false
+        description: >-
+          If true, the courtesy tone will not be sent when a user unkeys.
+          https://wiki.allstarlink.org/wiki/Rpt.conf#nounkeyct.3D
+
+      telemdynamic:
+        type: bool
+        required: false
+        default: true
+        description: >-
+          If true, telemetry can be dynamically enabled and disabled by the
+          COP commands. See
+          https://wiki.allstarlink.org/wiki/Rpt.conf#telemdynamic.3D
+
+      telemdefault:
+        type: int
+        required: false
+        default: 2
+        description: |
+          0 = telemetry output off
+          1 = telemetry output on
+          2 = timed telemetry output on command execution and for a short time thereafter.
+          https://wiki.allstarlink.org/wiki/Rpt.conf#telemdefault.3D

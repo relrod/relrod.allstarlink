@@ -14,7 +14,7 @@
 
     - name: Set up apt repository
       apt_repository:
-        repo: deb [signed-by=/etc/apt/trusted.gpg.d/ai5a-asl.asc] https://repo.ai5a.net/deb/{{ ansible_distribution_release }} {{ ansible_distribution_release }} bullseye main
+        repo: deb [signed-by=/etc/apt/trusted.gpg.d/asl.asc] https://repo.ai5a.net/deb/{{ ansible_distribution_release }} {{ ansible_distribution_release }} bullseye main
         filename: asl
 
     - name: Install kernel headers

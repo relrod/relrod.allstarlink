@@ -313,10 +313,15 @@ argument_specs:
         description: |
           0 = telemetry output off
           1 = telemetry output on
-          2 = timed telemetry output on command execution and for a short time thereafter.
+          2 = timed telemetry output on command execution and for a short time
+              thereafter.
           https://wiki.allstarlink.org/wiki/Rpt.conf#telemdefault.3D
 
       politeid:
         type: int
         required: false
         default: 30000
+        description: >-
+          The number of milliseconds prior to the end of the id cycle where the
+          controller will attempt to play the ID in the tail when a user unkeys.
+          https://wiki.allstarlink.org/wiki/Rpt.conf#politeid.3D

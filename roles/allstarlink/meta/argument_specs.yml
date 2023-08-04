@@ -123,7 +123,7 @@ argument_specs:
         default: "|t(750,0,125,2048)(1000,0,80,2048)"
         description: >-
           Courtesy tone when node is not linked to anything.
-          May be set to null to disable.
+          May be set to C("") to disable.
 
       link_rx_courtesy_tone:
         type: str
@@ -131,7 +131,7 @@ argument_specs:
         default: "|t(800,0,40,1500)(0,0,30,0)(800,0,40,1500)"
         description: >-
           Courtesy tone when node a linked remote unkeys.
-          May be set to null to disable.
+          May be set to C("") to disable.
 
       linked_courtesy_tone:
         type: str
@@ -139,7 +139,7 @@ argument_specs:
         default: "|t(660,0,50,2048)"
         description: >-
           Courtesy tone when someone on RF unkeys but we are linked.
-          May be set to null to disable.
+          May be set to C("") to disable.
 
       unkeywait:
         type: int

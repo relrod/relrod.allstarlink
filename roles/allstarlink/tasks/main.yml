@@ -32,6 +32,12 @@
           - asl-update-node-list
       register: install
 
+    - name: Modprobe dahdi
+      command:
+        cmd: modprobe dahdi
+        creates: /dev/dahdi/pseudo
+      when: install is defined and install is changed
+
     - name: Remove boilerplate files if fresh install
       file:
         dest: "{{ config_directory }}"

@@ -31,8 +31,5 @@ startup_macro: []
 hangtime: 500
 althangtime: 1000
 holdofftelem: false
-nounkeyct: false
 telemdynamic: true
 telemdefault: 2
-politeid: 30000
-courtesy_tones_enabled: true

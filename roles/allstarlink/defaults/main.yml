@@ -35,3 +35,4 @@ nounkeyct: false
 telemdynamic: true
 telemdefault: 2
 politeid: 30000
+courtesy_tones_enabled: true

@@ -1,5 +1,7 @@
 argument_specs:
   main:
+    description:
+      - This is an opinionated way to set up an AllStarLink node
     short_description: Set up an AllStarLink node
     author:
       - Rick Elrod
@@ -10,15 +12,14 @@ argument_specs:
         default: ai5a-deb
         choices:
           - ai5a-deb
-          - upstream-deb
+          #- upstream-deb
           - config-only
         description: |
           How should ASL be installed?
-          ai5a-deb: Uses the AI5A fork of AllStarLink
-          upstream-deb: Uses the upstream AllStarLink (often does not support
-                        newer Debian)
-          config-only: Writes out templated config files but does not install
-                       packages (useful for Docker installations to mount, etc.)
+
+          - C(ai5a-deb): Uses the AI5A fork of AllStarLink
+          - C(upstream-deb): B(Not yet implemented!) Uses the upstream AllStarLink (often does not support newer Debian)
+          - C(config-only): Writes out templated config files but does not install packages (useful for Docker installations to mount, etc.)
 
       config_directory:
         type: str
@@ -26,10 +27,12 @@ argument_specs:
         default: /etc/asterisk
         description: |
           Where should we write out the config files to?
-          This directory will be *deleted* on initial install (unless
-          install_method is config-only). Generally you should not change this
-          unless you are using install_method: config-only and want to mount
-          this directory from elsewhere.
+          This directory will be B(deleted) on initial install (unless
+          I(install_method) is C(config-only)).
+
+          Generally you should not change this unless you are using
+          C(install_method: config-only) and want to mount this directory from
+          elsewhere.
 
       node_number:
         type: int
@@ -46,17 +49,36 @@ argument_specs:
         type: int
         required: false
         default: 1
-        description: "https://wiki.allstarlink.org/wiki/Rpt.conf#duplex.3D"
+        description: |
+          What kind of hang times, audio repeat, and telemetry should be heard?
+
+          - C(0): Half duplex with no telemetry tones or hang time.
+          - C(1): Half duplex with telemetry tones and hang time. Does not repeat audio. This mode is preferred when interfacing a simplex node.
+          - C(2): Full duplex with telemetry tones and hang time. This mode is preferred when interfacing a repeater.
+          - C(3): Full duplex with telemetry tones and hang time, but no repeated audio. Useful for radioless nodes.
+          - C(4): Full duplex with telemetry tones and hang time. Repeated audio only when the autopatch is down.
+
+          See https://wiki.allstarlink.org/wiki/Rpt.conf#duplex.3D
 
       idrecording:
         type: str
         required: true
-        description: "https://wiki.allstarlink.org/wiki/Rpt.conf#idrecording.3D"
+        description: |
+          The recording or morse code to use for the normal ID.
+
+          May be set to the empty string C("") to disable.
+
+          See https://wiki.allstarlink.org/wiki/Rpt.conf#idrecording.3D
 
       idtalkover:
         type: str
         required: true
-        description: "https://wiki.allstarlink.org/wiki/Rpt.conf#idtalkover.3D"
+        description: |
+          The recording or morse code to use when someone talks over the the I(idrecording) ID.
+
+          May be set to the empty string C("") to disable.
+
+          See https://wiki.allstarlink.org/wiki/Rpt.conf#idtalkover.3D
 
       bind:
         type: str
@@ -99,19 +121,25 @@ argument_specs:
         type: str
         required: false
         default: "|t(750,0,125,2048)(1000,0,80,2048)"
-        description: Courtesy tone when node is not linked to anything.
+        description: >-
+          Courtesy tone when node is not linked to anything.
+          May be set to null to disable.
 
       link_rx_courtesy_tone:
         type: str
         required: false
         default: "|t(800,0,40,1500)(0,0,30,0)(800,0,40,1500)"
-        description: Courtesy tone when node a linked remote unkeys.
+        description: >-
+          Courtesy tone when node a linked remote unkeys.
+          May be set to null to disable.
 
       linked_courtesy_tone:
         type: str
         required: false
         default: "|t(660,0,50,2048)"
-        description: Courtesy tone when someone on RF unkeys but we are linked.
+        description: >-
+          Courtesy tone when someone on RF unkeys but we are linked.
+          May be set to null to disable.
 
       unkeywait:
         type: int
@@ -149,11 +177,12 @@ argument_specs:
         default: []
         description: |
           A list of dictionaries with keys:
-          - comment (optional, string),
-          - macro (int),
-          - when (cron style time format)
-          - finish (optional, cron style time format)
-          - finish_macro (optional, int)
+
+          - C(comment) (optional, string),
+          - C(macro) (int),
+          - C(when) (cron style time format)
+          - C(finish) (optional, cron style time format)
+          - C(finish_macro) (optional, int)
 
       rxchannel:
         type: str
@@ -171,40 +200,53 @@ argument_specs:
         type: dict
         required: false
         default: {}
-        description: >-
-          Required when 'echolink' is true.
-          A dictionary of echolink configuration options. See
-          https://wiki.allstarlink.org/wiki/Echolink.conf_-_Echolink_Channel_Driver
-          for more information. We directly translate the keys in this dictionary
-          to the echolink.conf file. The following keys are hardcoded:
-          astnode, context, server1, server2, server3, rtcptimeout, recfile
+        description: |
+          Required when C(echolink) is true.
+
+          A dictionary of echolink configuration options.
+          We directly translate the keys in this dictionary to the echolink.conf file.
+
+          The following keys are hardcoded, B(DO NOT SPECIFY THEM):
+
+          - C(astnode)
+          - C(context)
+          - C(server1)
+          - C(server2)
+          - C(server3)
+          - C(rtcptimeout)
+          - C(recfile)
+
+          See https://wiki.allstarlink.org/wiki/Echolink.conf_-_Echolink_Channel_Driver
 
       erxgain:
         type: int
         required: false
         default: -3
-        description: >-
-          https://wiki.allstarlink.org/wiki/Rpt.conf#erxgain.3D
+        description: |
           Receive gain for echolink in db-volts.
+
+          See https://wiki.allstarlink.org/wiki/Rpt.conf#erxgain.3D
 
       etxgain:
         type: int
         required: false
         default: 3
-        description: >-
-          https://wiki.allstarlink.org/wiki/Rpt.conf#etxgain.3D
+        description: |
           Transmit gain for echolink in db-volts.
+
+          https://wiki.allstarlink.org/wiki/Rpt.conf#etxgain.3D
 
       eannmode:
         type: int
         required: false
         default: 1
         description: |
-          https://wiki.allstarlink.org/wiki/Rpt.conf#eannmode.3D
           Announce mode for echolink.
-          1 = Say only node number on echolink connects
-          2 = Say phonetic call sign only on echolink connects
-          3 = Say phonetic call sign and node number on echolink connects
+          - C(1): Say only node number on echolink connects
+          - C(2): Say phonetic call sign only on echolink connects
+          - C(3): Say phonetic call sign and node number on echolink connects
+
+          See https://wiki.allstarlink.org/wiki/Rpt.conf#eannmode.3D
 
       acl_context:
         type: str
@@ -248,11 +290,14 @@ argument_specs:
         required: false
         default: []
         description: |
+          Local nodes to override from the AllStarLink database.
+
           A list of local nodes, not including the current node and only
           including nodes not already covered by the asterisk external nodes
           update script. This is for nodes, for example, that are on your LAN
           and you want to connect to directly without hairpinning.
-          Each dict must include: node_number, ip, port
+
+          Each dict must include: C(node_number), C(ip), C(port)
 
       startup_macro:
         type: list
@@ -268,60 +313,64 @@ argument_specs:
         type: int
         required: false
         default: 500
-        description: >-
+        description: |
           Repeater hang time in ms.
-          https://wiki.allstarlink.org/wiki/Rpt.conf#hangtime.3D
+
+          See https://wiki.allstarlink.org/wiki/Rpt.conf#hangtime.3D
 
       althangtime:
         type: int
         required: false
         default: 1000
-        description: >-
+        description: |
           Alternate hang time in ms.
-          https://wiki.allstarlink.org/wiki/Rpt.conf#althangtime.3D
+
+          See https://wiki.allstarlink.org/wiki/Rpt.conf#althangtime.3D
 
       holdofftelem:
         type: bool
         required: false
         default: false
-        description: >-
+        description: |
           Forces all telemetry to be held off until a local user on the receiver
-          or a remote user over a link unkeys. See
-          https://wiki.allstarlink.org/wiki/Rpt.conf#holdofftelem.3D
+          or a remote user over a link unkeys.
 
-      nounkeyct:
-        type: bool
-        required: false
-        default: false
-        description: >-
-          If true, the courtesy tone will not be sent when a user unkeys.
-          https://wiki.allstarlink.org/wiki/Rpt.conf#nounkeyct.3D
+          See https://wiki.allstarlink.org/wiki/Rpt.conf#holdofftelem.3D
 
       telemdynamic:
         type: bool
         required: false
         default: true
-        description: >-
-          If true, telemetry can be dynamically enabled and disabled by the
-          COP commands. See
-          https://wiki.allstarlink.org/wiki/Rpt.conf#telemdynamic.3D
+        description: |
+          Can telemetry be changed on the fly?
+
+          If C(true), telemetry can be dynamically enabled and disabled by the
+          COP commands.
+
+          See https://wiki.allstarlink.org/wiki/Rpt.conf#telemdynamic.3D
 
       telemdefault:
         type: int
         required: false
         default: 2
         description: |
-          0 = telemetry output off
-          1 = telemetry output on
-          2 = timed telemetry output on command execution and for a short time
-              thereafter.
-          https://wiki.allstarlink.org/wiki/Rpt.conf#telemdefault.3D
+          Describes when and if telemetry should be heard.
+
+          - C(0): telemetry output off
+          - C(1): telemetry output on
+          - C(2): timed telemetry output on command execution and for a short time thereafter.
+
+          See https://wiki.allstarlink.org/wiki/Rpt.conf#telemdefault.3D
 
       politeid:
         type: int
         required: false
         default: 30000
-        description: >-
-          The number of milliseconds prior to the end of the id cycle where the
-          controller will attempt to play the ID in the tail when a user unkeys.
-          https://wiki.allstarlink.org/wiki/Rpt.conf#politeid.3D
+        description: |
+          The polite ID timer.
+
+          That is, the number of milliseconds prior to the end of the id cycle
+          where the controller will attempt to play the ID in the tail when a
+          user unkeys.
+
+          See https://wiki.allstarlink.org/wiki/Rpt.conf#politeid.3D

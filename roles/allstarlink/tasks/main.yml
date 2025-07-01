@@ -14,7 +14,7 @@
 
     - name: Set up apt repository
       apt_repository:
-        repo: deb [signed-by=/etc/apt/trusted.gpg.d/asl.asc] https://d2hsfuechl7w22.cloudfront.net/deb/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main
+        repo: deb [signed-by=/etc/apt/trusted.gpg.d/asl.asc] https://d2hsfuechl7w22.cloudfront.net/deb/{{ ansible_distribution_release }} {{ ansible_distribution_release }} bullseye main
         filename: asl
 
     - name: Install kernel headers

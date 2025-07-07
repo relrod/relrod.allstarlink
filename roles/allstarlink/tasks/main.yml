@@ -148,3 +148,11 @@
 #    rule: allow
 #    port: "{{ port }}"
 #    comment: AllStarLink port
+
+- name: Work around upstream busted logrotate config
+  copy:
+    src: logrotate.conf
+    dest: /etc/logrotate.d/asl-asterisk
+    owner: root
+    group: root
+    mode: 0644
